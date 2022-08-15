@@ -6,9 +6,7 @@ import {FaPencilAlt, FaTimes} from "react-icons/fa";
 import Image from "next/image";
 
 export default function EventPage({ evt }) {
-	const deleteEvent = (e) => {
-
-	};
+	const deleteEvent = (e) => {};
 
 	return (
 		<Layout>
@@ -28,23 +26,24 @@ export default function EventPage({ evt }) {
 				</div>
 
 				<span>
-					{evt.date} at {evt.time}
+					{new Date(evt.attributes.date).toLocaleDateString('en-US')} at {evt.attributes.time}
 				</span>
-				<h1>{evt.name}</h1>
-				{evt.image && (
+				
+				<h1>{evt.attributes.name}</h1>
+				{evt.attributes.image && (
 					<div className={styles.image}>
-						<Image src={evt.image} width={960} height={600} alt={evt.name} />
+						<Image src={evt.attributes.image.data.attributes.formats.large.url} width={960} height={600} alt={evt.attributes.name} />
 					</div>
 				)}
 
 				<h3>Performers:</h3>
-				<p>{evt.performers}</p>
+				<p>{evt.attributes.performers}</p>
 
 				<h3>Description:</h3>
-				<p>{evt.description}</p>
+				<p>{evt.attributes.description}</p>
 
-				<h3>Venue: {evt.venue}</h3>
-				<p>{evt.address}</p>
+				<h3>Venue: {evt.attributes.venue}</h3>
+				<p>{evt.attributes.address}</p>
 
 				<Link href="/events">
 					<a className={styles.back}>{'<'} Go Back</a>
@@ -55,11 +54,12 @@ export default function EventPage({ evt }) {
 }
 
 export async function getStaticPaths() {
-	const res = await fetch(`${API_URL}/api/events/`);
+	const res = await fetch(`${API_URL}/api/events`);
 	const events = await res.json();
+	const data = events.data;
 
-	const paths = events.map(evt => ({
-		params: {slug: evt.slug}
+	const paths = data.map(evt => ({
+		params: {slug: evt.attributes.slug}
 	}));
 
 	return {
@@ -69,12 +69,12 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params: { slug } }) {
-	const res = await fetch(`${API_URL}/api/events/${slug}`);
+	const res = await fetch(`${API_URL}/api/events?filters[slug][$eq]=${slug}&populate=image`);
 	const events = await res.json();
 
 	return {
 		props: {
-			evt: events[0],
+			evt: events.data[0],
 		},
 		revalidate: 1,
 	}
