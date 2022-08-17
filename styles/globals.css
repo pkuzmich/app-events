@@ -27,7 +27,7 @@ h1 {
 
 .btn {
   display: inline-block;
-  background: red;
+  background: #d73232;
   color: #fff;
   padding: 10px 20px;
   cursor: pointer;
@@ -36,7 +36,7 @@ h1 {
 }
 
 .btn:hover {
-  opacity: 0.9;
+  opacity: 0.8;
 }
 
 .btn-secondary {
