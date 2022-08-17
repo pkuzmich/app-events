@@ -1,12 +1,46 @@
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Layout from "@/components/Layout";
 import {API_URL} from "@/config/index";
 import styles from "@/styles/Event.module.css";
 import Link from "next/link";
 import {FaPencilAlt, FaTimes} from "react-icons/fa";
 import Image from "next/image";
+import {useRouter} from "next/router";
+import {useState} from "react";
 
 export default function EventPage({ evt }) {
-	const deleteEvent = (e) => {};
+	const router = useRouter();
+	const [errorEvents, setErrorEvents] = useState(null);
+
+	// Parses the JSON returned by a network request
+	const parseJSON = resp => (resp.json ? resp.json() : resp);
+
+	// Checks if a network request came back fine, and throws an error if not
+	const checkStatus = resp => {
+		if (resp.status >= 200 && resp.status < 300) {
+			return resp;
+		}
+		return parseJSON(resp).then(resp => {
+			throw resp;
+		});
+	};
+	const headers = {
+		'Content-Type': 'application/json',
+	};
+
+	const deleteEvent = async (e) => {
+		 if (confirm('Are you sure?')) {
+			 const response = await fetch(`${API_URL}/api/events/${evt.id}`, {
+				 method: 'DELETE',
+				 headers,
+			 })
+				 .then(checkStatus)
+				 .then(parseJSON)
+				 .then(() => router.push('/events'))
+				 .catch(data => toast.error(data.message));
+		 }
+	};
 
 	return (
 		<Layout>
@@ -30,6 +64,7 @@ export default function EventPage({ evt }) {
 				</span>
 				
 				<h1>{evt.attributes.name}</h1>
+				<ToastContainer />
 				{evt.attributes.image && (
 					<div className={styles.image}>
 						<Image
