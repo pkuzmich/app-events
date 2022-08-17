@@ -32,7 +32,16 @@ export default function EventPage({ evt }) {
 				<h1>{evt.attributes.name}</h1>
 				{evt.attributes.image && (
 					<div className={styles.image}>
-						<Image src={evt.attributes.image.data.attributes.formats.large.url} width={960} height={600} alt={evt.attributes.name} />
+						<Image
+							src={
+								evt.image
+									? evt.image.data.attributes.formats.large.url
+									: '/images/event-default.png'
+							}
+							width={960}
+							height={600}
+							alt={evt.name}
+						/>
 					</div>
 				)}
 
