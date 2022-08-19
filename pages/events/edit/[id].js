@@ -3,12 +3,13 @@ import { FaImage} from "react-icons/fa";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Layout from "@/components/Layout";
+import Modal from "@/components/Modal";
 import {useRouter} from "next/router";
 import {useState} from "react";
 import styles from "@/styles/Form.module.css";
 import Link from "next/link";
-import {API_URL} from "@/config/index";
 import Image from "next/image";
+import {API_URL} from "@/config/index";
 
 export default function EditEventPage({ evt }) {
 	const [values, setValues] = useState({
@@ -25,6 +26,7 @@ export default function EditEventPage({ evt }) {
 			? evt.attributes.image.data.attributes.formats.thumbnail.url
 			: null
 	);
+	const [showModal, setShowModal] = useState(false);
 
 	const [errorEvents, setErrorEvents] = useState(null);
 
@@ -178,10 +180,14 @@ export default function EditEventPage({ evt }) {
 			)}
 
 			<div>
-				<button className="btn-secondary">
+				<button onClick={() => setShowModal(true)} className="btn-secondary btn-icon">
 					<FaImage /> Set Image
 				</button>
 			</div>
+
+			<Modal show={showModal} onClose={() => setShowModal(false)}>
+				IMAGE UPLOAD
+			</Modal>
 		</Layout>
 	);
 }
