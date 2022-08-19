@@ -10,6 +10,7 @@ import styles from "@/styles/Form.module.css";
 import Link from "next/link";
 import Image from "next/image";
 import {API_URL} from "@/config/index";
+import ImageUpload from "@/components/ImageUpload";
 
 export default function EditEventPage({ evt }) {
 	const [values, setValues] = useState({
@@ -21,8 +22,9 @@ export default function EditEventPage({ evt }) {
 		time: evt.attributes.time,
 		description: evt.attributes.description,
 	});
+	// events.attributes.image.data.attributes.formats.thumbnail.url
 	const [imagePreview, setImagePreview] = useState(
-		evt.attributes.image.data
+		evt.attributes.image.data !== null
 			? evt.attributes.image.data.attributes.formats.thumbnail.url
 			: null
 	);
@@ -85,6 +87,15 @@ export default function EditEventPage({ evt }) {
 			...prev,
 			[name]: value,
 		}));
+	};
+
+	const imageUploaded = async (e) => {
+		const res = await fetch(`${API_URL}/api/events/${evt.id}?populate=image`);
+		const data = await res.json();
+		const events = data.data;
+
+		setImagePreview(events.attributes.image.data.attributes.formats.thumbnail.url);
+		setShowModal(false);
 	};
 
 	return (
@@ -186,7 +197,7 @@ export default function EditEventPage({ evt }) {
 			</div>
 
 			<Modal show={showModal} onClose={() => setShowModal(false)}>
-				IMAGE UPLOAD
+				<ImageUpload evtId={evt.id} imageUploaded={imageUploaded} />
 			</Modal>
 		</Layout>
 	);
