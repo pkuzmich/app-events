@@ -11,7 +11,6 @@ import {useState} from "react";
 
 export default function EventPage({ evt }) {
 	const router = useRouter();
-	const [errorEvents, setErrorEvents] = useState(null);
 
 	// Parses the JSON returned by a network request
 	const parseJSON = resp => (resp.json ? resp.json() : resp);
@@ -31,7 +30,7 @@ export default function EventPage({ evt }) {
 
 	const deleteEvent = async (e) => {
 		 if (confirm('Are you sure?')) {
-			 const response = await fetch(`${API_URL}/api/events/${evt.id}`, {
+			 await fetch(`${API_URL}/api/events/${evt.id}`, {
 				 method: 'DELETE',
 				 headers,
 			 })
@@ -65,14 +64,11 @@ export default function EventPage({ evt }) {
 				
 				<h1>{evt.attributes.name}</h1>
 				<ToastContainer />
-				{evt.attributes.image && (
+
+				{evt.attributes.image.data && (
 					<div className={styles.image}>
 						<Image
-							src={
-								evt.image
-									? evt.image.data.attributes.formats.large.url
-									: '/images/event-default.png'
-							}
+							src={evt.attributes.image.data.attributes.formats.large.url}
 							width={960}
 							height={600}
 							alt={evt.name}

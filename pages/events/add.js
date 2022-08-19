@@ -43,7 +43,6 @@ export default function AddEventPage() {
 	const handleSubmit = async e => {
 		e.preventDefault();
 
-
 		try {
 			// Validation
 			const hasEmptyFields = Object.values(values).some((element) => element === '');
