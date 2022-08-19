@@ -16,7 +16,8 @@
 .form input[type='submit'] {
     display: block;
     width: 100%;
-    margin: 20px 0 30px;
+    max-width: 200px;
+    margin: 20px auto 30px;
 }
 
 .form .file {
