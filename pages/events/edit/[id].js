@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { FaImage} from "react-icons/fa";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Layout from "@/components/Layout";
@@ -7,6 +8,7 @@ import {useState} from "react";
 import styles from "@/styles/Form.module.css";
 import Link from "next/link";
 import {API_URL} from "@/config/index";
+import Image from "next/image";
 
 export default function EditEventPage({ evt }) {
 	const [values, setValues] = useState({
@@ -18,6 +20,11 @@ export default function EditEventPage({ evt }) {
 		time: evt.attributes.time,
 		description: evt.attributes.description,
 	});
+	const [imagePreview, setImagePreview] = useState(
+		evt.attributes.image.data
+			? evt.attributes.image.data.attributes.formats.thumbnail.url
+			: null
+	);
 
 	const [errorEvents, setErrorEvents] = useState(null);
 
@@ -160,12 +167,27 @@ export default function EditEventPage({ evt }) {
 				</div>
 				<input type="submit" value="Update Event" className="btn" />
 			</form>
+
+			<h2>Event Image</h2>
+			{imagePreview ? (
+				<Image src={imagePreview} height={100} width={170} />
+			) : (
+				<div>
+					<p>No image uploaded</p>
+				</div>
+			)}
+
+			<div>
+				<button className="btn-secondary">
+					<FaImage /> Set Image
+				</button>
+			</div>
 		</Layout>
 	);
 }
 
 export async function getServerSideProps({ params: {id} }) {
-	const res = await fetch(`${API_URL}/api/events/${id}`);
+	const res = await fetch(`${API_URL}/api/events/${id}?populate=image`);
 	const evt = await res.json();
 
 	return { props: { evt: evt.data } };
