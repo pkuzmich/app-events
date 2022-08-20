@@ -5,7 +5,6 @@ import {toast} from "react-toastify";
 
 export default function ImageUpload({evtId, imageUploaded}) {
 	const [image, setImage] = useState(null);
-	const [errorEvents, setErrorEvents] = useState(null);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
