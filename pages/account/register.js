@@ -3,7 +3,7 @@ import {FaUser} from "react-icons/fa";
 import {toast, ToastContainer} from "react-toastify";
 import Link from "next/link";
 import Layout from "@/components/Layout";
-import {useContext, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import AuthContext from "@/context/AuthContext";
 
 export default function RegisterPage() {
@@ -14,6 +14,11 @@ export default function RegisterPage() {
 
 	const {register, error} = useContext(AuthContext);
 
+	// Show error message if error on register
+	useEffect(() => {
+		error && toast.error(error)
+	});
+
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
@@ -22,7 +27,7 @@ export default function RegisterPage() {
 			return;
 		}
 
-		register({username,  email, password});
+		register({ username,  email, password });
 	};
 
 	return (
